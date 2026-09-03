@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من الإعلام التقليدي إلى الإعلام التفاعلي</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;900&family=Aref+Ruqaa:wght@400;700&display=swap');
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --gold: #c9a227;
+            --light: #f5f5f5;
+            --dark: #0f0f1a;
+            --glass: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ===== Preloader ===== */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            margin: 20px auto;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .loader-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            animation: load 2s ease forwards;
+        }
+
+        @keyframes load {
+            to { width: 100%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.98); }
+        }
+
+        /* ===== Particles Canvas ===== */
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== Navigation ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.4s ease;
+            background: transparent;
+        }
+
+        nav.scrolled {
+            background: rgba(15,15,26,0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 50px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+
+        .nav-logo {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo svg {
+            width: 35px;
+            height: 35px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--light);
+            transition: 0.3s;
+        }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 100px 50px 50px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 70% 30%, rgba(233,69,96,0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 30% 70%, rgba(201,162,39,0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--gold);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            animation: fadeInDown 1s ease;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hero-title {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            line-height: 1.4;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, var(--gold) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 15px;
+            font-weight: 300;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .hero-meta {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .meta-item {
+            text-align: center;
+        }
+
+        .meta-item .label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 5px;
+        }
+
+        .meta-item .value {
+            font-size: 1.1rem;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            right: 50%;
+            transform: translateX(50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            animation: fadeIn 1s ease 1s both;
+        }
+
+        .mouse {
+            width: 25px;
+            height: 40px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .mouse::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 4px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 2px;
+            animation: scrollWheel 2s infinite;
+        }
+
+        @keyframes scrollWheel {
+            0% { opacity: 1; transform: translateX(50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(50%) translateY(12px); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== Sections ===== */
+        section {
+            padding: 100px 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-number {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 5rem;
+            color: rgba(201,162,39,0.1);
+            line-height: 1;
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            pointer-events: none;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(233,69,96,0.15);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        .section-title {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .section-line {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            margin: 0 auto;
+            border-radius: 3px;
+        }
+
+        /* ===== Cards ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 35px;
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: rgba(201,162,39,0.3);
+        }
+
+        .glass-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), #ff6b6b);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .card-text {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.9;
+            font-size: 0.95rem;
+        }
+
+        /* ===== Timeline ===== */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 50px auto 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 30px;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent), var(--gold), var(--accent));
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-right: 80px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            right: 20px;
+            top: 5px;
+            width: 22px;
+            height: 22px;
+            background: var(--dark);
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            display: inline-block;
+            padding: 4px 14px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .timeline-content {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: rgba(233,69,96,0.4);
+            transform: translateX(-5px);
+        }
+
+        .timeline-content h4 {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.8;
+            font-size: 0.92rem;
+        }
+
+        /* ===== Comparison ===== */
+        .comparison-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .compare-box {
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .compare-box.traditional {
+            background: linear-gradient(135deg, rgba(100,100,100,0.2), rgba(50,50,50,0.3));
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .compare-box.interactive {
+            background: linear-gradient(135deg, rgba(233,69,96,0.15), rgba(201,162,39,0.1));
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        .compare-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .compare-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .traditional .compare-icon {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .interactive .compare-icon {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+        }
+
+        .compare-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .traditional .compare-title { color: rgba(255,255,255,0.8); }
+        .interactive .compare-title { color: var(--gold); }
+
+        .compare-list {
+            list-style: none;
+        }
+
+        .compare-list li {
+            padding: 12px 0;
+            padding-right: 25px;
+            position: relative;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.7;
+            font-size: 0.92rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.08);
+        }
+
+        .compare-list li:last-child {
+            border-bottom: none;
+        }
+
+        .compare-list li::before {
+            content: '◄';
+            position: absolute;
+            right: 0;
+            font-size: 0.7rem;
+            top: 18px;
+        }
+
+        .traditional .compare-list li::before { color: rgba(255,255,255,0.4); }
+        .interactive .compare-list li::before { color: var(--accent); }
+
+        .vs-badge {
+            position: absolute;
+            top: 50%;
+            right: 50%;
+            transform: translate(50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: var(--dark);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.3rem;
+            color: var(--gold);
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(201,162,39,0.3);
+        }
+
+        /* ===== Features Grid ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(0deg, rgba(233,69,96,0.1), transparent);
+            transition: height 0.4s ease;
+        }
+
+        .feature-card:hover::after {
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(233,69,96,0.4);
+        }
+
+        .feature-num {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 3rem;
+            color: rgba(233,69,96,0.3);
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .feature-desc {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.88rem;
+            line-height: 1.8;
+        }
+
+        /* ===== Content Sections (Report Text) ===== */
+        .report-content {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .report-paragraph {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 35px 40px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            font-family: 'Amiri', serif;
+            font-size: 1.1rem;
+            line-height: 2.2;
+            color: rgba(255,255,255,0.85);
+            text-align: justify;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .report-paragraph.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .report-paragraph::before {
+            content: '"';
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 4rem;
+            color: rgba(201,162,39,0.15);
+            line-height: 1;
+        }
+
+        .report-paragraph:hover {
+            border-color: rgba(201,162,39,0.3);
+            background: rgba(255,255,255,0.07);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(233,69,96,0.12), rgba(201,162,39,0.08));
+            border-right: 4px solid var(--accent);
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin: 25px 0;
+            font-family: 'Amiri', serif;
+            font-size: 1.05rem;
+            line-height: 2;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .highlight-box strong {
+            color: var(--gold);
+        }
+
+        /* ===== References ===== */
+        .refs-list {
+            max-width: 750px;
+            margin: 40px auto 0;
+        }
+
+        .ref-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 18px 22px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.75);
+        }
+
+        .ref-item:hover {
+            border-color: rgba(201,162,39,0.3);
+            transform: translateX(-5px);
+        }
+
+        .ref-num {
+            min-width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), #ff6b6b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            padding: 60px 50px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .footer-text {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .footer-line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            margin: 20px auto;
+        }
+
+        /* ===== Progress Bar ===== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            z-index: 10001;
+            transition: width 0.1s ease;
+        }
+
+        /* ===== Back to Top ===== */
+        .back-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), #ff6b6b);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 5px 20px rgba(233,69,96,0.4);
+        }
+
+        .back-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(233,69,96,0.5);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            nav { padding: 15px 25px; }
+            nav.scrolled { padding: 12px 25px; }
+
+            .menu-toggle { display: flex; }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                height: 100vh;
+                background: rgba(15,15,26,0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+                transition: right 0.4s ease;
+            }
+
+            .nav-links.open { right: 0; }
+
+            .hero { padding: 100px 25px 80px; }
+            section { padding: 60px 25px; }
+
+            .comparison-wrapper { grid-template-columns: 1fr; }
+            .vs-badge { display: none; }
+
+            .section-number { font-size: 3rem; top: 30px; right: 25px; }
+
+            .hero-meta { gap: 20px; }
+        }
+
+        /* ===== Reveal Animation ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* ===== Custom Cursor ===== */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10002;
+            transition: transform 0.1s;
+        }
+
+        .cursor-ring {
+            width: 35px;
+            height: 35px;
+            border: 1.5px solid rgba(201,162,39,0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+            transition: all 0.15s ease;
+        }
+
+        .cursor-ring.hovering {
+            transform: scale(1.5);
+            border-color: var(--accent);
+            background: rgba(233,69,96,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-logo">الإعلام التفاعلي</div>
+            <div class="loader-bar"><div class="loader-progress"></div></div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Particles -->
+    <canvas id="particles"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            الإعلام التفاعلي
+        </a>
+        <button class="menu-toggle" id="menuToggle">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#hero" class="active">الرئيسية</a></li>
+            <li><a href="#definitions">المفهوم</a></li>
+            <li><a href="#birth">النشأة</a></li>
+            <li><a href="#development">التطور</a></li>
+            <li><a href="#features">الخصائص</a></li>
+            <li><a href="#comparison">المقارنة</a></li>
+            <li><a href="#references">المصادر</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                تقرير أكاديمي — قسم الإعلام — جامعة تكريت
+            </div>
+            <h1 class="hero-title">من الإعلام التقليدي<br>إلى الإعلام التفاعلي</h1>
+            <p class="hero-subtitle">مفهوماً ونشأةً وتطوراً</p>
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <div class="label">إعداد الطالب</div>
+                    <div class="value">عباس بركات فرحان</div>
+                </div>
+                <div class="meta-item">
+                    <div class="label">أستاذ المادة</div>
+                    <div class="value">أ.م. خالد علي</div>
+                </div>
+                <div class="meta-item">
+                    <div class="label">السنة الدراسية</div>
+                    <div class="value">2026 / 2027</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+            <span>اسحب للأسفل</span>
+        </div>
+    </section>
+
+    <!-- Definitions -->
+    <section id="definitions">
+        <div class="container">
+            <div class="section-number">٠١</div>
+            <div class="section-header reveal">
+                <span class="section-tag">الفصل الأول</span>
+                <h2 class="section-title">المفهوم والتعريف</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="report-content">
+                <div class="report-paragraph reveal">
+                    يُعدّ الإعلام بأحدث صوره وتطوّره أحد أهمّ عناصر الحياة المعاصرة، وقد أخذ هذا العنصر يتّسع ويتعمّق في كلّ يوم يمرّ، حتى غدا جزءاً لا يتجزّأ من مناحي الحياة المختلفة. فقد بدأ نشأته بصفةٍ بسيطةٍ جداً؛ فهو عبارة عن وسيلة اتصال بدائية، ثمّ تطوّر ونما وازداد اتساعاً وعمقاً، حتى غدا اليوم ظاهرةً إعلاميةً عالميةً، مؤثّرةً في كافّة مناحي الحياة، ومتداخلةً معها تداخلاً عميقاً.
+                </div>
+
+                <div class="report-paragraph reveal">
+                    وعلى هذا الأساس، يمكن القول إنّ الإعلام التقليدي قد حصر نفسه في إطارٍ ضيّقٍ من الوظائف والأدوار، إذ اقتصر على نقل الأخبار والمعلومات بشكلٍ أحاديّ الجانب، دون أن يتيح للمتلقّي أيّ فرصةٍ للتفاعل أو المشاركة أو التعبير عن الرأي. وقد تجلّى ذلك في وسائل الإعلام التقليدية كالصحف والمجلات والإذاعة والتلفزيون، حيث كان المتلقي فيها مجردَ مستقبِلٍ سلبيّ لا يملك أيّ تأثيرٍ يُذكر على المحتوى المُقدَّم إليه.
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="glass-card reveal-right">
+                    <div class="card-icon">📡</div>
+                    <h3 class="card-title">الإعلام التقليدي</h3>
+                    <p class="card-text">يُعرَّف بأنه منظومة اتصال تعتمد على نقل الرسائل والمعلومات في اتجاهٍ واحد (أحادي الاتجاه)، حيث تحتكر المؤسسة الإعلامية دور «المرسِل»، بينما يقتصر دور الجمهور على كونه «مستقبِلاً» يتلقّى المادة، وتكون استجابته متأخرة أو غير مرئية.</p>
+                </div>
+                <div class="glass-card reveal-left">
+                    <div class="card-icon">🌐</div>
+                    <h3 class="card-title">الإعلام التفاعلي</h3>
+                    <p class="card-text">يُعرَّف بأنه بيئة اتصالية تعتمد على التقنية الرقمية، تكسر احتكار الرسالة وتسمح للمتلقي بالاستجابة الفورية والتحكّم في المحتوى، مما يتيح تبادل الأدوار؛ ليصبح الجمهور نفسه صانعاً للمعلومة ومساهماً فيها ضمن شبكة متعددة الاتجاهات.</p>
+                </div>
+            </div>
+
+            <div class="report-content" style="margin-top: 40px;">
+                <div class="highlight-box reveal">
+                    <strong>الخلاصة:</strong> التحوّل من «الإعلام التقليدي» إلى «الإعلام التفاعلي» ليس مجرد تغييرٍ في الأدوات والوسائل، بل هو تحوّلٌ جذريٌّ في طبيعة العلاقة بين المُرسِل والمستقبِل، وفي بنية السلطة الإعلامية ذاتها، حيث انتقل المتلقي من مجرد «مستقبِلٍ» إلى «مشاركٍ فاعلٍ» و«شريكٍ» في صناعة المحتوى والمعنى.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Birth / Origins -->
+    <section id="birth" style="background: rgba(0,0,0,0.2);">
+        <div class="container">
+            <div class="section-number">٠٢</div>
+            <div class="section-header reveal">
+                <span class="section-tag">الفصل الثاني</span>
+                <h2 class="section-title">نشأة الإعلام التفاعلي</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="report-content">
+                <div class="report-paragraph reveal">
+                    تعود جذور الإعلام التفاعلي إلى أواخر ستينيات القرن الماضي، تحديداً مع إنشاء شبكة «الأربانت» (ARPANET) عام 1969، والتي كانت في بداياتها مجرد شبكة اتصال تربط بين مؤسساتٍ علميةٍ وأكاديميةٍ محدودة، لكنها كانت بذرةً للتحوّل الجذري الذي سيشهده عالم الاتصال لاحقاً. فقد كان الهدف الأساسي من إنشائها هو تسهيل تبادل المعلومات والبيانات بين الباحثين والأكاديميين، غير أنّ هذه الشبكة سرعان ما تطوّرت وازدادت قدراتها، حتى غدت نواةً للإنترنت الحديث.
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-year">1969</span>
+                    <div class="timeline-content">
+                        <h4>إنشاء شبكة الأربانت (ARPANET)</h4>
+                        <p>البذرة الأولى للإنترنت، ربطت بين الجامعات والمراكز البحثية الأمريكية بهدف تبادل المعلومات علمياً.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-year">1972</span>
+                    <div class="timeline-content">
+                        <h4>البريد الإلكتروني الأول</h4>
+                        <p>ابتكار البريد الإلكتروني (E-mail) بواسطة راي توملينسون، مما أحدث نقلةً نوعيةً في التواصل البشري عبر الشبكات.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-year">1991</span>
+                    <div class="timeline-content">
+                        <h4>شبكة الويب العالمية (WWW)</h4>
+                        <p>تيم بيرنرز لي يطلق الشبكة العنكبوتية العالمية، فتتحول الشبكة من مجرد نقل بيانات إلى فضاءٍ معلوماتيٍّ شامل.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-year">1997 - 1998</span>
+                    <div class="timeline-content">
+                        <h4>ظهور المدونات والمحتوى المفتوح</h4>
+                        <p>انتشار المدونات (Blogs) التي أتاحت للأفراد نشر محتواهم الخاص والتعبير عن آرائهم بحرية، ممهّدةً لعصر المواطن الصحفي.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-year">2004</span>
+                    <div class="timeline-content">
+                        <h4>الجيل الثاني من الويب (Web 2.0)</h4>
+                        <p>انطلاق مواقع التواصل الاجتماعي ومنصات المشاركة الجماعية، حيث تحوّل المستخدم من متلقٍّ سلبيٍّ إلى منتجٍ ومشاركٍ فاعل.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-year">2007</span>
+                    <div class="timeline-content">
+                        <h4>ثورة الهواتف الذكية</h4>
+                        <p>إطلاق أول هاتفٍ ذكيٍّ (آيفون) فتح الباب أمام إعلامٍ فوريٍّ متنقل، وأصبح المحتوى الإعلامي في متناول الجميع في أيّ وقتٍ ومكان.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-year">2026</span>
+                    <div class="timeline-content">
+                        <h4>عصر الذكاء الاصطناعي التوليدي</h4>
+                        <p>تحوّل الإعلام من «التفاعلي» إلى «الذكي»، حيث تُنتج الخوارزميات محتوىً مخصصاً لكلّ مستخدم، وتُعيد تشكيل تجربة الإعلام برمّتها.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development -->
+    <section id="development">
+        <div class="container">
+            <div class="section-number">٠٣</div>
+            <div class="section-header reveal">
+                <span class="section-tag">الفصل الثالث</span>
+                <h2 class="section-title">تطوّر الإعلام التفاعلي</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="report-content">
+                <div class="report-paragraph reveal">
+                    شهد الإعلام التفاعلي تطوّراً متسارعاً خلال العقود الأخيرة، فقد انتقل من مجرد وسيلةٍ لتبادل النصوص والبيانات، إلى فضاءٍ متكاملٍ يجمع بين النص والصورة والصوت والفيديو، ويتيح للمستخدم تجربةً إعلاميةً غامرةً ومتعددة الأبعاد. وقد ترافق هذا التطوّر مع سلسلةٍ من الابتكارات التقنية التي أحدثت تحوّلاتٍ عميقةً في بنية الاتصال الإنساني.
+                </div>
+
+                <div class="report-paragraph reveal">
+                    ففي عام 2004، جاء انطلاق ما يُعرف بـ «الويب 2.0» ليُحدث نقلةً نوعيةً في مفهوم الإعلام التفاعلي، إذ تحوّل الإنترنت من مجرد شاشاتٍ ثابتةٍ للقراءة والتصفح، إلى منصاتٍ حيّةٍ تعتمد على المشاركة والتفاعل المباشر. وقد برزت شبكات التواصل الاجتماعي وأصبح المستخدم العادي هو قلب العملية الإعلامية، مما أفرز ظاهرة «صانع المحتوى» و«الصحفي المواطن»، ليسحب هذا التطوّر البساط تدريجياً من هيمنة المؤسسات الإعلامية التقليدية، ويجعل الجماهير هي من تصنع الحدث وتنشره.
+                </div>
+
+                <div class="report-paragraph reveal">
+                    ثمّ جاءت مرحلة الذكاء الاصطناعي التوليدي (Generative AI) لتُضيف بعداً جديداً لهذا التطوّر، حيث لم يعد المتلقي يستهلك المحتوى فحسب، بل أصبح الذكاء الاصطناعي شريكاً في إنتاجه وتخصيصه. ففي عام 2026، تحوّل الإعلام من «التفاعلي» إلى «الذكي»، حيث تُنتج الخوارزميات محتوىً مخصصاً لكلّ مستخدمٍ على حدة، وتُعيد تشكيل تجربة الإعلام برمّتها وفقاً لاهتماماته وسلوكه التفاعلي.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" style="background: rgba(0,0,0,0.2);">
+        <div class="container">
+            <div class="section-number">٠٤</div>
+            <div class="section-header reveal">
+                <span class="section-tag">الفصل الرابع</span>
+                <h2 class="section-title">خصائص الإعلام التفاعلي</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-num">١</div>
+                    <h3 class="feature-title">التفاعلية والمشاركة</h3>
+                    <p class="feature-desc">تحوّل المتلقي من مستقبِلٍ سلبيٍّ إلى مشاركٍ فاعلٍ، يُعيد نشر المحتوى ويُعلّق عليه ويُنتجه، فيتحوّل الاتصال من مسار «ثنائي الاتجاه» إلى منظومةٍ اتصاليةٍ متعددة الاتجاهات بلا مركزية.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.1s;">
+                    <div class="feature-num">٢</div>
+                    <h3 class="feature-title">الفورية والسرعة</h3>
+                    <p class="feature-desc">انتشار الخبر بسرعةٍ لحظيةٍ محكومٍ بـ «دورة زمنية»؛ فالجمهور يضطر لانتظار النشرة المسائية أو صحيفة الصباح ليعرف ما حدث، بينما يعيش الإعلام الرقمي في بيئةٍ فورية (Real-time) لا تعترف بالتأجيل.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.2s;">
+                    <div class="feature-num">٣</div>
+                    <h3 class="feature-title">الخوارزميات وتحليل البيانات</h3>
+                    <p class="feature-desc">يعتمد الإعلام التقليدي على تقديراتٍ إحصائيةٍ تقريبيةٍ لمعرفة حجم متابعيه، بينما يتسلح الإعلام الرقمي بخوارزميات الذكاء الاصطناعي وتحليل البيانات الضخمة (Big Data) ليدرس سلوك كلِّ مستخدمٍ على حدة.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.3s;">
+                    <div class="feature-num">٤</div>
+                    <h3 class="feature-title">اقتصاديات التشغيل</h3>
+                    <p class="feature-desc">صناعة تتطلب استثماراتٍ بملايين الدولارات لتأسيس مطابع، أو حجر تردداتٍ فضائيةٍ، أو بناء استوديوهاتٍ ضخمة. هذا الجدار المالي انهار تماماً في العصر الرقمي، حيث أصبح الهاتف الذكي والاتصال بالإنترنت هما رأس المال الوحيد المطلوب لدخول الساحة.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.4s;">
+                    <div class="feature-num">٥</div>
+                    <h3 class="feature-title">تعددية الوسائط</h3>
+                    <p class="feature-desc">دمج النص والصورة والصوت والفيديو في تجربةٍ إعلاميةٍ واحدةٍ متكاملة، مما يمنح المستخدم تجربةً غامرةً وشاملةً تتجاوز حدود الوسيلة الإعلامية الواحدة التقليدية.</p>
+                </div>
+                <div class="feature-card reveal" style="transition-delay: 0.5s;">
+                    <div class="feature-num">٦</div>
+                    <h3 class="feature-title">إلغاء الحدود الجغرافية</h3>
+                    <p class="feature-desc">انتشار المحتوى عبر شبكات التواصل الاجتماعي يجعل إخفاء المعلومة أو احتكارها أمراً شبه مستحيل، ويضع السلطة الإعلامية في يد الشارع، ويوزعها على مستوى العالم أجمع بلا حدودٍ أو قيود.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section id="comparison">
+        <div class="container">
+            <div class="section-number">٠٥</div>
+            <div class="section-header reveal">
+                <span class="section-tag">الفصل الخامس</span>
+                <h2 class="section-title">مقارنة شاملة</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="comparison-wrapper" style="position: relative;">
+                <div class="vs-badge">VS</div>
+                <div class="compare-box traditional reveal-right">
+                    <div class="compare-header">
+                        <div class="compare-icon">📰</div>
+                        <h3 class="compare-title">الإعلام التقليدي</h3>
+                    </div>
+                    <ul class="compare-list">
+                        <li>اتصال أحادي الجانب (One-way) من المُرسِل إلى المستقبِل</li>
+                        <li>المتلقي دورٌ سلبيٌّ لا يملك التأثير على المحتوى</li>
+                        <li>بطء في نقل الخبر وانتظار النشرات المجدولة</li>
+                        <li>احتكار المؤسسة الإعلامية لصناعة الرسالة والمعنى</li>
+                        <li>تكاليف إنتاجية باهظة (مطابع، أقمار صناعية، استوديوهات)</li>
+                        <li>تقديراتٌ إحصائيةٌ تقريبيةٌ لقياس حجم الجمهور</li>
+                        <li>حدودٌ جغرافيةٌ وسياسيةٌ تُقيّد انتشار المحتوى</li>
+                    </ul>
+                </div>
+                <div class="compare-box interactive reveal-left">
+                    <div class="compare-header">
+                        <div class="compare-icon">💻</div>
+                        <h3 class="compare-title">الإعلام التفاعلي</h3>
+                    </div>
+                    <ul class="compare-list">
+                        <li>اتصال متعدد الاتجاهات (Many-to-Many) وتبادل الأدوار</li>
+                        <li>المتلقي مشاركٌ فاعلٌ وصانع محتوى و«صحفي مواطن»</li>
+                        <li>فورية تامة (Real-time) ونقل الحدث لحظة بلحظة</li>
+                        <li>تفكيك احتكار السلطة الإعلامية وتوزيعها على الشارع</li>
+                        <li>رأس مال رمزي: هاتف ذكي واتصال بالإنترنت</li>
+                        <li>تحليل دقيق لسلوك كل مستخدمٍ عبر الخوارزميات و Big Data</li>
+                        <li>إلغاء الحدود الجغرافية والانتشار العالمي الفوري</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- References -->
+    <section id="references" style="background: rgba(0,0,0,0.2);">
+        <div class="container">
+            <div class="section-number">٠٦</div>
+            <div class="section-header reveal">
+                <span class="section-tag">الملحق</span>
+                <h2 class="section-title">المصادر والمراجع</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="refs-list">
+                <div class="ref-item reveal"><span class="ref-num">1</span><span>نونيز، هنري (2006). ثقافة الفورية: أنصاف الإعلام القديم. نيويورك: طنك.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.05s;"><span class="ref-num">2</span><span>صادق، مصطفى (2008). الإعلام الجديد: فلسفة التقنية (ط1). لندن: شقنشع.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.1s;"><span class="ref-num">3</span><span>عبدالله، شذى (2007). الإنترنت في بناء صرح المعرفة. بغداد: بنغنش.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.15s;"><span class="ref-num">4</span><span>فانك، هنري (2013). ثقافة الفصل: نقد الإعلام. أكسفورد: طاف.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.2s;"><span class="ref-num">5</span><span>سوزا، نيل (2001). الإنترنت: آثار الإعلام على الوعي الجمعي. أكسفورد: طاف.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.25s;"><span class="ref-num">6</span><span>نون، غاري (2006). الإنترنت: أدوات السعي وراء المعرفة. لندن: هندسة.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.3s;"><span class="ref-num">7</span><span>طه، خليل (2018). الإعلام وتحليل المستقبل: دراسات في التحديات. بيروت: زست.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.35s;"><span class="ref-num">8</span><span>دسوقي، صفا (2025). تقنيات الذكاء الاصطناعي وتطبيقاته في الإعلام. أكسفورد: ألف.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.4s;"><span class="ref-num">9</span><span>يحيى، حمدان (1998). الإعلام نظاماً ومنهجاً (ط1). القاهرة: دشن طنشع.</span></div>
+                <div class="ref-item reveal" style="transition-delay: 0.45s;"><span class="ref-num">10</span><span>مؤلف (2006). الإنترنت في تحليل المستقبل: دراسات في التحديات. لندن: طن الإنترنت.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">الإعلام التفاعلي</div>
+            <div class="footer-line"></div>
+            <p class="footer-text">
+                تقرير أكاديمي مُقدَّم إلى أستاذ المادة أ.م. خالد علي<br>
+                إعداد الطالب: عباس بركات فرحان — قسم الإعلام — جامعة تكريت<br>
+                الكورس الأول — السنة الدراسية 2026 / 2027
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-top" id="backTop" title="العودة للأعلى">↑</button>
+
+    <script>
+        // ===== Preloader =====
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 2200);
+        });
+
+        // ===== Particles =====
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = Math.random() > 0.5 ? '233, 69, 96' : '201, 162, 39';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(80, Math.floor(window.innerWidth / 20));
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            // Connect nearby particles
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(201, 162, 39, ${0.05 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // ===== Custom Cursor =====
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorRing = document.getElementById('cursorRing');
+
+        document.addEventListener('mousemove', (e) => {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+            cursorRing.style.left = (e.clientX - 17) + 'px';
+            cursorRing.style.top = (e.clientY - 17) + 'px';
+        });
+
+        document.querySelectorAll('a, button, .glass-card, .feature-card, .timeline-content, .compare-box').forEach(el => {
+            el.addEventListener('mouseenter', () => cursorRing.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovering'));
+        });
+
+        // ===== Navbar Scroll =====
+        const navbar = document.getElementById('navbar');
+        const progressBar = document.getElementById('progressBar');
+        const backTop = document.getElementById('backTop');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+
+            navbar.classList.toggle('scrolled', scrollTop > 50);
+            progressBar.style.width = scrollPercent + '%';
+            backTop.classList.toggle('show', scrollTop > 500);
+
+            // Active nav link
+            document.querySelectorAll('section[id]').forEach(section => {
+                const top = section.offsetTop - 100;
+                const height = section.offsetHeight;
+                const id = section.getAttribute('id');
+                const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+                if (link) {
+                    if (scrollTop >= top && scrollTop < top + height) {
+                        document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        backTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== Mobile Menu =====
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => navLinks.classList.remove('open'));
+        });
+
+        // ===== Smooth Scroll =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ===== Intersection Observer for Reveal =====
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .report-paragraph, .timeline-item').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // ===== Parallax Effect on Hero =====
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            const heroBg = document.querySelector('.hero-bg');
+            if (heroBg) {
+                heroBg.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+
+        // ===== Counter Animation for Timeline Years =====
+        const yearObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.timeline-year').forEach(el => {
+            yearObserver.observe(el);
+        });
+    </script>
+</body>
+</html>
